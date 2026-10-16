@@ -1,0 +1,55 @@
+name: Deploy a GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un despliegue a la vez; no cancelamos el que esté en curso para no dejar el sitio a medias.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      # bun.lock es el lockfile del proyecto; instalación reproducible.
+      - name: Instalar dependencias
+        working-directory: Project
+        run: bun install --frozen-lockfile
+
+      - name: Comprobar tipos y tests
+        working-directory: Project
+        run: |
+          bunx tsc --noEmit
+          bunx vitest run
+
+      - name: Build estático
+        working-directory: Project
+        run: bun run build:pages
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: Project/dist-pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

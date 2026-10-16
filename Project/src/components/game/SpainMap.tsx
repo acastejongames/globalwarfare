@@ -9,11 +9,17 @@ export function SpainMap({
   players,
   region,
   lastConquest,
+  frontier,
+  targets,
 }: {
   guessed: Record<string, string>;
   players: Player[];
   region: SpainRegion;
   lastConquest?: { a2: string; at: number } | undefined;
+  /** Territorios en contacto con lo que posee el jugador en turno (modo conquista). */
+  frontier?: readonly string[] | undefined;
+  /** Territorios a los que puede saltar si no tiene frontera. */
+  targets?: readonly string[] | undefined;
 }) {
   const geo = useMemo(() => spainGeometry(region), [region]);
   const { view, zoomBy, reset, svgProps } = useMapView();
@@ -22,6 +28,8 @@ export function SpainMap({
   const insetClip = `${uid}-inset`;
 
   const colorOf = (pid: string) => players.find((p) => p.id === pid)?.color;
+  const frontierSet = useMemo(() => new Set(frontier ?? []), [frontier]);
+  const targetSet = useMemo(() => new Set(targets ?? []), [targets]);
   const last = lastConquest;
 
   const renderShapes = (shapes: Shape[], showZoom: boolean) =>
@@ -32,7 +40,9 @@ export function SpainMap({
         <path
           key={s.id}
           d={s.d}
-          className={`map-land ${color ? "map-land-owned" : ""}`}
+          className={`map-land ${color ? "map-land-owned" : ""} ${
+            frontierSet.has(s.id) ? "map-land-frontier" : ""
+          } ${targetSet.has(s.id) ? "map-land-target" : ""}`}
           style={color ? { fill: `var(--player-${color})` } : undefined}
           strokeWidth={showZoom ? 0.5 / view.k : 0.5}
         >

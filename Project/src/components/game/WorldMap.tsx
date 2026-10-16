@@ -24,14 +24,22 @@ export function WorldMap({
   players,
   region,
   lastConquest,
+  frontier,
+  targets,
 }: {
   guessed: Record<string, string>;
   players: Player[];
   region: Region;
   lastConquest?: { a2: string; at: number } | undefined;
+  /** Territorios en contacto con lo que posee el jugador en turno (modo conquista). */
+  frontier?: readonly string[] | undefined;
+  /** Territorios a los que puede saltar si no tiene frontera. */
+  targets?: readonly string[] | undefined;
 }) {
   const { view, zoomBy, reset, svgProps } = useMapView();
   const inRegion = useMemo(() => new Set(countriesIn(region).map((c) => c.a2)), [region]);
+  const frontierSet = useMemo(() => new Set(frontier ?? []), [frontier]);
+  const targetSet = useMemo(() => new Set(targets ?? []), [targets]);
   const colorOf = (pid: string) => players.find((p) => p.id === pid)?.color;
   const last = lastConquest && shapes.find((s) => s.a2 === lastConquest.a2);
 
@@ -51,7 +59,9 @@ export function WorldMap({
               <path
                 key={i}
                 d={s.d}
-                className={`map-land ${s.a2 && inRegion.has(s.a2) ? "" : "map-land-out"} ${color ? "map-land-owned" : ""}`}
+                className={`map-land ${s.a2 && inRegion.has(s.a2) ? "" : "map-land-out"} ${color ? "map-land-owned" : ""} ${
+                  s.a2 && frontierSet.has(s.a2) ? "map-land-frontier" : ""
+                } ${s.a2 && targetSet.has(s.a2) ? "map-land-target" : ""}`}
                 style={color ? { fill: `var(--player-${color})` } : undefined}
                 strokeWidth={0.5 / view.k}
               >

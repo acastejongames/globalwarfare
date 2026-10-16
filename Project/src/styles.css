@@ -122,6 +122,10 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
 .map-land { fill: var(--land); stroke: var(--land-stroke); transition: fill .8s ease, opacity .3s; }
 .map-land-out { opacity: .18; }
 .map-land-owned { animation: conquer .9s ease; }
+/* Modo conquista: lo que puedes conquistar ahora y los saltos si no hay frontera. */
+.map-land-frontier { stroke: var(--primary); stroke-width: 1.4; stroke-dasharray: 3 2; }
+.map-land-target { stroke: var(--primary); stroke-width: 2; stroke-dasharray: 5 3; animation: target-pulse 1.6s ease-in-out infinite; }
+@keyframes target-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
 .map-inset { fill: oklch(0 0 0 / 28%); stroke: var(--border); }
 .map-inset-label { fill: var(--muted-foreground); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; paint-order: stroke; stroke: var(--ocean); stroke-width: 2px; }
 @keyframes conquer { 0% { filter: brightness(2); } 100% { filter: none; } }
