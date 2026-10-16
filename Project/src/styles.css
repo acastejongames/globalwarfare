@@ -1,0 +1,131 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.2 0.045 265);
+  --foreground: oklch(0.95 0.01 90);
+  --card: oklch(0.26 0.05 262);
+  --card-foreground: oklch(0.95 0.01 90);
+  --popover: oklch(0.26 0.05 262);
+  --popover-foreground: oklch(0.95 0.01 90);
+  --primary: oklch(0.8 0.15 80);
+  --primary-foreground: oklch(0.2 0.045 265);
+  --secondary: oklch(0.31 0.05 262);
+  --secondary-foreground: oklch(0.95 0.01 90);
+  --muted: oklch(0.31 0.05 262);
+  --muted-foreground: oklch(0.7 0.03 255);
+  --accent: oklch(0.34 0.06 262);
+  --accent-foreground: oklch(0.95 0.01 90);
+  --destructive: oklch(0.68 0.2 22);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.8 0.15 80);
+  --ocean: oklch(0.17 0.04 265);
+  --land: oklch(0.88 0.01 90);
+  --land-stroke: oklch(0.55 0.03 260);
+  --player-emerald: oklch(0.7 0.15 162);
+  --player-amber: oklch(0.77 0.16 70);
+  --player-sapphire: oklch(0.62 0.19 259);
+  --player-plum: oklch(0.66 0.21 354);
+  --player-coral: oklch(0.7 0.19 47);
+  --player-teal: oklch(0.72 0.12 200);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-xl); }
+.chip { border: 1px solid var(--border); border-radius: 999px; padding: .4rem .9rem; font-size: .875rem; transition: all .15s; }
+.chip:hover { background: var(--accent); }
+.chip-on { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.field { background: var(--secondary); border: 1px solid var(--input); border-radius: var(--radius); padding: .6rem .9rem; outline: none; }
+.field:focus { border-color: var(--ring); }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); font-weight: 700; border-radius: var(--radius); padding: .6rem 1.2rem; transition: filter .15s; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-ghost { border: 1px solid var(--border); border-radius: var(--radius); padding: .6rem 1.2rem; font-weight: 600; }
+.btn-ghost:hover { background: var(--accent); }
+.player-pill { display: flex; align-items: center; gap: .5rem; padding: .35rem .75rem; border-radius: 999px; background: var(--secondary); font-size: .875rem; border: 1px solid transparent; transition: all .2s; }
+.player-pill-active { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 25%, transparent); }
+.map-ocean { background: var(--ocean); border: 1px solid var(--border); }
+.map-graticule { fill: none; stroke: oklch(1 0 0 / 5%); stroke-width: .5; }
+.map-land { fill: var(--land); stroke: var(--land-stroke); transition: fill .8s ease, opacity .3s; }
+.map-land-out { opacity: .18; }
+.map-land-owned { animation: conquer .9s ease; }
+@keyframes conquer { 0% { filter: brightness(2); } 100% { filter: none; } }
+.map-label text { fill: var(--foreground); font-weight: 800; paint-order: stroke; stroke: var(--ocean); stroke-width: 3px; animation: rise 4s ease forwards; }
+@keyframes rise { 0% { opacity: 0; transform: translateY(4px); } 15%,75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.map-ctrl { width: 2rem; height: 2rem; border-radius: .5rem; background: var(--card); border: 1px solid var(--border); font-weight: 700; }
+.timer-track { fill: none; stroke: var(--secondary); stroke-width: 6; }
+.timer-bar { fill: none; stroke: var(--primary); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
+.timer-danger { stroke: var(--destructive); }
