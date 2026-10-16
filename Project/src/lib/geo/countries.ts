@@ -19,7 +19,11 @@ export const REGION_LABELS: Record<Region, string> = {
   SPAIN_PROVINCES: "Provincias de España",
 };
 
-export const isSpain = (region: Region) => region === "SPAIN_COMMUNITIES" || region === "SPAIN_PROVINCES";
+export type SpainRegion = "SPAIN_COMMUNITIES" | "SPAIN_PROVINCES";
+
+export function isSpain(region: Region): region is SpainRegion {
+  return region === "SPAIN_COMMUNITIES" || region === "SPAIN_PROVINCES";
+}
 export const territoryPlural = (region: Region) => region === "SPAIN_COMMUNITIES" ? "comunidades" : region === "SPAIN_PROVINCES" ? "provincias" : "países";
 export const territorySingular = (region: Region) => region === "SPAIN_COMMUNITIES" ? "una comunidad" : region === "SPAIN_PROVINCES" ? "una provincia" : "un país";
 

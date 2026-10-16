@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { WorldMap } from "@/components/game/WorldMap";
+import { SpainMap } from "@/components/game/SpainMap";
 import { useGame, type Difficulty, type GameState, type Player } from "@/lib/game/useGame";
 import { newRoomCode, useGuest, useHost } from "@/lib/game/online";
-import { REGION_LABELS, countriesIn, type Region } from "@/lib/geo/countries";
+import { REGION_LABELS, countriesIn, isSpain, type Region } from "@/lib/geo/countries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -270,7 +271,11 @@ function Match({ g }: { g: G }) {
 
       <div className="grid flex-1 gap-3 lg:grid-cols-[1fr_280px]">
         <div className="relative min-h-[50vh]">
-          <WorldMap guessed={s.guessed} players={s.players} region={s.region} lastConquest={s.lastConquest} />
+          {isSpain(s.region) ? (
+            <SpainMap guessed={s.guessed} players={s.players} region={s.region} lastConquest={s.lastConquest} />
+          ) : (
+            <WorldMap guessed={s.guessed} players={s.players} region={s.region} lastConquest={s.lastConquest} />
+          )}
           {s.phase === "over" && (
             <div className="absolute inset-0 grid place-items-center rounded-2xl bg-background/70 backdrop-blur-sm">
               <div className="panel max-w-sm p-8 text-center">

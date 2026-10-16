@@ -122,6 +122,8 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
 .map-land { fill: var(--land); stroke: var(--land-stroke); transition: fill .8s ease, opacity .3s; }
 .map-land-out { opacity: .18; }
 .map-land-owned { animation: conquer .9s ease; }
+.map-inset { fill: oklch(0 0 0 / 28%); stroke: var(--border); }
+.map-inset-label { fill: var(--muted-foreground); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; paint-order: stroke; stroke: var(--ocean); stroke-width: 2px; }
 @keyframes conquer { 0% { filter: brightness(2); } 100% { filter: none; } }
 .map-label text { fill: var(--foreground); font-weight: 800; paint-order: stroke; stroke: var(--ocean); stroke-width: 3px; animation: rise 4s ease forwards; }
 @keyframes rise { 0% { opacity: 0; transform: translateY(4px); } 15%,75% { opacity: 1; transform: none; } 100% { opacity: 0; } }

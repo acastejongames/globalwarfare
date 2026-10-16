@@ -1,11 +1,13 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { geoNaturalEarth1, geoPath, geoGraticule10 } from "d3-geo";
 import { feature } from "topojson-client";
 import world from "world-atlas/countries-110m.json";
 import { COUNTRY_BY_A2, countriesIn, featureToA2, type Region } from "@/lib/geo/countries";
 import type { Player } from "@/lib/game/useGame";
+import { mapTransform, useMapView } from "./useMapView";
 
-const W = 960, H = 500;
+const W = 960,
+  H = 500;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fc = feature(world as any, (world as any).objects.countries) as any;
 const proj = geoNaturalEarth1().fitSize([W, H], fc);
@@ -28,8 +30,7 @@ export function WorldMap({
   region: Region;
   lastConquest?: { a2: string; at: number } | undefined;
 }) {
-  const [view, setView] = useState({ k: 1, x: 0, y: 0 });
-  const drag = useRef<{ x: number; y: number } | null>(null);
+  const { view, zoomBy, reset, svgProps } = useMapView();
   const inRegion = useMemo(() => new Set(countriesIn(region).map((c) => c.a2)), [region]);
   const colorOf = (pid: string) => players.find((p) => p.id === pid)?.color;
   const last = lastConquest && shapes.find((s) => s.a2 === lastConquest.a2);
@@ -39,21 +40,9 @@ export function WorldMap({
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-full w-full cursor-grab touch-none select-none active:cursor-grabbing"
-        onWheel={(e) => {
-          const k = Math.min(8, Math.max(1, view.k * (e.deltaY < 0 ? 1.2 : 1 / 1.2)));
-          setView((v) => ({ ...v, k }));
-        }}
-        onPointerDown={(e) => (drag.current = { x: e.clientX, y: e.clientY })}
-        onPointerMove={(e) => {
-          if (!drag.current) return;
-          const dx = e.clientX - drag.current.x, dy = e.clientY - drag.current.y;
-          drag.current = { x: e.clientX, y: e.clientY };
-          setView((v) => ({ ...v, x: v.x + dx / v.k, y: v.y + dy / v.k }));
-        }}
-        onPointerUp={() => (drag.current = null)}
-        onPointerLeave={() => (drag.current = null)}
+        {...svgProps}
       >
-        <g transform={`translate(${W / 2} ${H / 2}) scale(${view.k}) translate(${-W / 2 + view.x} ${-H / 2 + view.y})`}>
+        <g transform={mapTransform(view, W, H)}>
           <path d={grat} className="map-graticule" />
           {shapes.map((s, i) => {
             const owner = s.a2 && guessed[s.a2];
@@ -71,7 +60,11 @@ export function WorldMap({
             );
           })}
           {last && Date.now() - lastConquest!.at < 4000 && (
-            <g key={lastConquest!.at} className="map-label" transform={`translate(${last.c[0]} ${last.c[1]})`}>
+            <g
+              key={lastConquest!.at}
+              className="map-label"
+              transform={`translate(${last.c[0]} ${last.c[1]})`}
+            >
               <text textAnchor="middle" fontSize={12 / view.k}>
                 {COUNTRY_BY_A2[last.a2!]?.name}
               </text>
@@ -80,16 +73,17 @@ export function WorldMap({
         </g>
       </svg>
       <div className="absolute bottom-3 right-3 flex flex-col gap-1">
-        {[["+", 1.4], ["−", 1 / 1.4]].map(([l, f]) => (
-          <button
-            key={l as string}
-            className="map-ctrl"
-            onClick={() => setView((v) => ({ ...v, k: Math.min(8, Math.max(1, v.k * (f as number))) }))}
-          >
-            {l}
+        {[
+          ["+", 1.4],
+          ["−", 1 / 1.4],
+        ].map(([label, factor]) => (
+          <button key={String(label)} className="map-ctrl" onClick={() => zoomBy(Number(factor))}>
+            {String(label)}
           </button>
         ))}
-        <button className="map-ctrl text-xs" onClick={() => setView({ k: 1, x: 0, y: 0 })}>⟲</button>
+        <button className="map-ctrl text-xs" onClick={reset}>
+          ⟲
+        </button>
       </div>
     </div>
   );
